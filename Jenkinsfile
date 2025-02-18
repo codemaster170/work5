@@ -2,69 +2,64 @@ pipeline {
     agent any
 
     environment {
-        // Define any environment variables you need here
-        // For example, if you want to define a Java home variable:
-        JAVA_HOME = '/path/to/java'
+        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk' // Update this path based on your server's Java installation
+        PATH = "$JAVA_HOME/bin:$PATH"
     }
 
     stages {
-        // Stage 1: Checkout the code from your Git repository
         stage('Checkout') {
             steps {
-                // Checkout the code from Git repository
                 git branch: 'main', url: 'https://github.com/codemaster170/work5.git'
-                // Ensure you're using the correct branch name here
             }
         }
 
-        // Stage 2: Clean and Build the Maven project
         stage('Build') {
             steps {
                 script {
-                    // Run Maven clean install to build the project
-                    sh 'mvn clean install'
+                    sh 'mvn clean compile'
                 }
             }
         }
 
-        // Stage 3: Run Unit Tests
         stage('Test') {
             steps {
                 script {
-                    // Run Maven tests with Surefire
-                    sh 'mvn test'
+                    sh 'mvn verify'
                 }
             }
         }
 
-        // Stage 4: Publish Test Results
         stage('Publish Test Results') {
             steps {
-                // Publish JUnit test results
-                junit '**/target/test-classes/*.xml' // Ensure this matches your test result location
+                junit '**/target/surefire-reports/*.xml'
             }
         }
 
-        // Stage 5: Archive Artifacts (Optional, if you want to keep the build jar)
+        stage('Package') {
+            steps {
+                script {
+                    sh 'mvn package'
+                }
+            }
+        }
+
         stage('Archive Artifacts') {
             steps {
-                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: true
+                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
             }
         }
     }
 
     post {
-        // Actions that will happen after the pipeline run
         success {
-            echo 'Build and tests successful!'
+            echo 'Build and tests completed successfully!'
         }
         failure {
-            echo 'Build or tests failed.'
+            echo 'Build or tests failed. Check logs for details.'
         }
         always {
-            // Actions that always run after the pipeline, regardless of success/failure
-            echo 'Cleaning up or running post-build tasks.'
-            // Add any clean-up steps here, like removing temporary files or notifying users
+            echo 'Cleaning up workspace...'
+            cleanWs() // Cleans the workspace after execution
         }
     }
 }
