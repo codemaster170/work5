@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        MVN_HOME = tool 'Maven'  // Make sure Maven is installed in Jenkins Global Tool Configuration
-        JAVA_HOME = tool 'JDK8'  // Make sure JDK 8 is configured in Jenkins Global Tool Configuration
+        MVN_HOME = tool 'Maven'  // Ensure Maven is installed in Jenkins Global Tool Configuration
+        JAVA_HOME = tool 'JDK21'  // Use JDK 21 for your project, or ensure it's available
     }
 
     stages {
@@ -52,5 +52,6 @@ pipeline {
         }
     }
 }
+
 
 
