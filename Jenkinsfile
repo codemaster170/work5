@@ -24,6 +24,7 @@ pipeline {
         stage('Test') {
             steps {
                 script {
+                    // Running tests and generating reports
                     sh 'mvn verify'
                 }
             }
@@ -31,7 +32,7 @@ pipeline {
 
         stage('Publish Test Results') {
             steps {
-                junit '**/target/surefire-reports/*.xml'
+                junit '**/target/surefire-reports/*.xml'  // Make sure this matches the location of your test reports
             }
         }
 
@@ -63,3 +64,4 @@ pipeline {
         }
     }
 }
+
