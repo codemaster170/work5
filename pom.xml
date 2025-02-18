@@ -1,7 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   
+  <!-- Add your groupId and version here -->
+  <groupId>org.example</groupId> <!-- Example groupId, update it to fit your project -->
   <artifactId>Swing</artifactId>
+  <version>1.0-SNAPSHOT</version> <!-- Version of your project -->
   
   <properties>
     <maven.compiler.source>21</maven.compiler.source>
@@ -18,6 +21,7 @@
     </dependency>
   </dependencies>
 </project>
+
 
 
 
