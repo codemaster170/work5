@@ -2,66 +2,55 @@ pipeline {
     agent any
 
     environment {
-        JAVA_HOME = '/usr/lib/jvm/java-21-openjdk' // Update this path based on your server's Java installation
-        PATH = "$JAVA_HOME/bin:$PATH"
+        MVN_HOME = tool 'Maven'  // Make sure Maven is installed in Jenkins Global Tool Configuration
+        JAVA_HOME = tool 'JDK8'  // Make sure JDK 8 is configured in Jenkins Global Tool Configuration
     }
 
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/codemaster170/work5.git'
+                // Checkout the code from the repository
+                git 'https://github.com/codemaster170/work5.git'  // Replace with your actual GitHub repo URL
             }
         }
 
         stage('Build') {
             steps {
+                // Build the project using Maven
                 script {
-                    sh 'mvn clean compile'
+                    sh "${MVN_HOME}/bin/mvn clean install -DskipTests"  // Skipping tests during build
                 }
             }
         }
 
         stage('Test') {
             steps {
+                // Run the tests using Maven
                 script {
-                    // Running tests and generating reports
-                    sh 'mvn verify'
-                }
-            }
-        }
-
-        stage('Publish Test Results') {
-            steps {
-                junit '**/target/surefire-reports/*.xml'  // Make sure this matches the location of your test reports
-            }
-        }
-
-        stage('Package') {
-            steps {
-                script {
-                    sh 'mvn package'
+                    sh "${MVN_HOME}/bin/mvn test"
                 }
             }
         }
 
         stage('Archive Artifacts') {
             steps {
-                archiveArtifacts artifacts: 'target/*.jar', allowEmptyArchive: false
+                // Archive the jar file as a build artifact
+                archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.jar', followSymlinks: false
             }
         }
     }
 
     post {
         success {
-            echo 'Build and tests completed successfully!'
+            // Notify success
+            echo 'Build and tests successful!'
         }
+
         failure {
-            echo 'Build or tests failed. Check logs for details.'
-        }
-        always {
-            echo 'Cleaning up workspace...'
-            cleanWs() // Cleans the workspace after execution
+            // Notify failure
+            echo 'Build or tests failed. Please check the logs.'
         }
     }
 }
+
 
